@@ -137,4 +137,447 @@ const accountCopy = {
 
 accountCopy.describe()  
 ```
-* Private and Public are very important concepts in OOP which helps in defining how the class properties and methods are been used or manipulated. Private properties or methods can only be accessed inside the class, while public properties can be accessed in the class or outside the classs.
+* Private and Public are very important concepts in OOP which helps in defining how the class properties and methods are been used or manipulated. Private properties or methods can only be accessed inside the class, while public properties can be accessed in the class or outside the classs. Also, readOnly access modifier enforces immutability of properties.  Once they are intialized, they can't be modified.
+```typescript
+class Department {
+  private employees: string[] = [];
+  constructor(public name: string, private readonly id: number) {
+    this.name = name
+    this.id = id
+
+  }
+  describe(this: Department): void {
+    console.log(`Department with name of ${this.name} and id of ${this.id}`)
+  }
+
+  addEmployee(this: Department, employee: string){
+    this.employees.push(employee)
+  }
+  printEmployees(this: Department){
+    console.log(this.employees)
+  }
+}
+
+
+
+const accounting = new Department("Account", 5)
+accounting.addEmployee("Kelechi Mbawuike")
+
+// accounting.employees = "Stella" won't work
+accounting.describe()
+
+accounting.printEmployees()
+
+```
+* Inheritance is an OPP principle or concept which allows two or more classes share properties or methods. it is a core concept of  OOP as it helps in creating scalable systems. a class can inherit from another class by using the  **extends** keyword. During inheritance, the super keyword is used to initialize the properties of the parent class (call the constructor function of the parent class)
+```typescript
+class Department {
+  private employees: string[] = [];
+  constructor(private id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+  describe(this: Department): void {
+    console.log(`Department with name of ${this.name} and id of ${this.id}`)
+  }
+
+  addEmployee(this: Department, employee: string) {
+    this.employees.push(employee)
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+  getRoles(this: ITDepartment){
+    this.adminRoles.map((role, key) => console.log(`Role ${key} is ${role}`))
+  }
+}
+
+class UtilityDepartment extends Department{
+  constructor (id: number, private permissions: number[]){
+    super(id, 'Utility Department')
+    this.permissions = permissions
+  }
+  getPermissionsNumber(this: UtilityDepartment){
+    return this.permissions.length
+  }
+}
+
+const payStackIT = new ITDepartment(5, ["Admin", "Employee", "Manager"])
+payStackIT.addEmployee("Kelechi Mbawuike")
+
+// accounting.employees = "Stella" won't work
+payStackIT.describe()
+
+payStackIT.printEmployees()
+payStackIT.getRoles
+
+const payStackUtil = new UtilityDepartment(7, [1,3 ,6])
+payStackUtil.addEmployee("Festus")
+payStackUtil.getPermissionsNumber()
+
+```
+* unlike **private**, a class **protected** properties or methods is accessible it's  child classes
+```typescript
+class Department {
+  protected employees: string[] = [];
+  constructor(private id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+  describe(this: Department): void {
+    console.log(`Department with name of ${this.name} and id of ${this.id}`)
+  }
+
+  addEmployee(this: Department, employee: string) {
+    this.employees.push(employee)
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+  getRoles(this: ITDepartment) {
+    this.adminRoles.map((role, key) => console.log(`Role ${key} is ${role}`))
+  }
+
+  addEmployee(this: ITDepartment, employee: string) {
+    if (employee.toLocaleLowerCase().includes("mbawuike")) {
+      return this.employees.push(employee)
+    }
+  }
+}
+
+const payStackIT = new ITDepartment(5, ["Admin", "Employee", "Manager"])
+payStackIT.addEmployee("Kelechi")
+payStackIT.addEmployee("Mbawuike Kelechi")
+
+// accounting.employees = "Stella" won't work
+payStackIT.describe()
+
+payStackIT.printEmployees()
+payStackIT.getRolesclass Department {
+  protected employees: string[] = [];
+  constructor(private id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+  describe(this: Department): void {
+    console.log(`Department with name of ${this.name} and id of ${this.id}`)
+  }
+
+  addEmployee(this: Department, employee: string) {
+    this.employees.push(employee)
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+  getRoles(this: ITDepartment) {
+    this.adminRoles.map((role, key) => console.log(`Role ${key} is ${role}`))
+  }
+
+  addEmployee(this: ITDepartment, employee: string) {
+    if (employee.toLocaleLowerCase().includes("mbawuike")) {
+      return this.employees.push(employee)
+    }
+  }
+}
+
+const payStackIT = new ITDepartment(5, ["Admin", "Employee", "Manager"])
+payStackIT.addEmployee("Kelechi")
+payStackIT.addEmployee("Mbawuike Kelechi")
+
+// accounting.employees = "Stella" won't work
+payStackIT.describe()
+
+payStackIT.printEmployees()
+payStackIT.getRoles
+
+
+
+```
+* getters are basically methods that returns properties of a class, usually private or protected properties. a getter function must always return a value. The **get** keyword is used to define a getter method. Similar to getter, a setter is used to manipulate class properties. Getters and setters of private or protected properties is often used to encaspulate logic from the outside word.
+* **static** properties and methods are tied directly to the class and are accessed directly without instatiating the class. e.g **Math.pow()**
+```typescript
+class Department {
+  protected employees: string[] = [];
+  constructor(private id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+
+  addEmployee(this: Department, employee: string) {
+    this.employees = [...this.employees, employee]
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+  getRoles(this: ITDepartment) {
+    this.adminRoles.map((role, key) => console.log(`Role ${key} is ${role}`))
+  }
+ 
+  get getEmployees(){
+    if (this.employees.length > 0){
+      return this.employees
+    }else{
+      throw new Error("Employees array is empty");
+      
+    }
+  }
+
+  set setEmployees(employees: string[]){
+    if(employees.length <= 0){
+      throw new Error("Cannot set empty array");
+    }else{
+      this.employees = [...this.employees, ...employees]
+    }
+  }
+
+  addEmployee(this: ITDepartment, employee: string) {
+    if (employee.toLocaleLowerCase().includes("mbawuike")) {
+      return this.employees.push(employee)
+    }
+  }
+
+  static createEmployee(name: string){
+    return {name}
+  }
+}
+
+const payStackIT = new ITDepartment(5, ["Admin", "Employee", "Manager"])
+
+payStackIT.setEmployees = ["Kenny", "Fletcher", "next"]
+console.log(payStackIT.getEmployees, "Getter method")
+console.log(ITDepartment.createEmployee('Newman Stanley'))
+payStackIT.getRoles
+```
+* Abstract Classes - Abstract class is very important while working with related classes that share similar properties and methods. An abstract method in an abstract class will always force it's child class to implement it. they are defined with the **abstract** keyword
+```typescript
+abstract class Department {
+  protected employees: string[] = [];
+  constructor(protected id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+  abstract describe(): void;
+  addEmployee(this: Department, employee: string) {
+    this.employees = [...this.employees, employee]
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+
+  describe(){
+    console.log(`${this.name} : ${this.id}`)
+  }
+
+  static createEmployee(name: string) {
+    return { name }
+  }
+}
+
+const payStackIT = new ITDepartment(5, ["Admin", "Employee", "Manager"])
+
+console.log(ITDepartment.createEmployee('Newman Stanley'))
+
+payStackIT.describe()
+```
+* Singletons and Private Constructors: The singleton pattern of OOP ensures a class has only one instance of itself. This done by defining a private constructor
+
+```typescript
+abstract class Department {
+  protected employees: string[] = [];
+  constructor(protected id: number, public name: string) {
+    this.name = name
+    this.id = id
+
+  }
+  abstract describe(): void;
+  addEmployee(this: Department, employee: string) {
+    return this.employees = [...this.employees, employee]
+  }
+  printEmployees(this: Department) {
+    console.log(this.employees)
+  }
+}
+
+class ITDepartment extends Department {
+  public adminRoles: string[]
+  private static instance: ITDepartment
+  private constructor(id: number, adminRoles: string[]) {
+    super(id, 'Information Techmology')
+    this.adminRoles = adminRoles
+  }
+
+  describe() {
+    console.log(`${this.name} : ${this.id}`)
+  }
+
+  static getInstance() {
+    if (ITDepartment.instance) {
+      return this.instance
+    }
+    this.instance = new ITDepartment(5, ['Admin', 'Employee', 'Manager'])
+    return this.instance
+
+  }
+
+  static createEmployee(name: string) {
+    return { name }
+  }
+}
+
+const payStackIT = ITDepartment.getInstance()
+ console.log(payStackIT, payStackIT.addEmployee("Lionel Messi"))
+ payStackIT.describe()
+```
+
+##_Interfaces_
+* An interface simply describes the structure of an object (How an object should look like). They are basically used to type check objects.
+```typescript
+interface Person {
+  name: string;
+  age: number;
+  greet(phrase: string): void;
+}
+
+let user1: Person;
+user1 = {
+  name: "Kelechi",
+  age: 24,
+  greet(phrase: string) {
+    console.log(`${phrase} ${this.name}`)
+  }
+}
+
+user1.greet('Good Morning')
+```
+* Interfaces are similar to Custom Types in TS, however, unlike custom types which have union types, interfaces can only have a single type thus making it clearer.
+* Interface are basically used as contracts followed by a class. They are basically used to share functionalities amongst differnt classes not regarding their complete implemetation. Interfaces are similar to abstract classes, however in Interfaces unlike Abstract classes who can't have implemetations or values inside an interface. A class can implement multiple interfaces by sepearating them with commas.
+```typescript
+interface Greetable {
+  name: string;
+  greet(phrase: string): void;
+}
+
+class Person implements Greetable {
+  name: string;
+  constructor(name: string){
+    this.name = name
+  }
+  greet(phrase: string) {
+    console.log(`${phrase} ${this.name}`)
+  }
+}
+
+let user1: Greetable
+user1 = new Person("Kelechi")
+
+user1.greet('Good Morning')
+```
+* interfaces just as custom types can also have readonly attribute accessors and can inherit(extend) from one another
+```typescript
+
+interface Named{
+ readonly name: string;
+}
+
+interface Greetable extends Named {
+  greet(phrase: string): void;
+}
+
+interface Aged{
+  age: number
+}
+
+class Person implements Greetable, Aged {
+  name: string;
+  constructor(name: string, public age: number){
+    this.name = name
+    this.age = age
+  }
+  greet(phrase: string) {
+    console.log(`${phrase} ${this.name}`)
+  }
+}
+
+const user1 = new Person("Kelechi", 5)
+
+user1.greet('Good Morning')
+```
+* Interfaces and Classes can also have optional properties and methods (they are not required)
+```typescript
+
+interface Named {
+  readonly name?: string;
+}
+
+interface Greetable extends Named {
+  greet(phrase: string): void;
+}
+
+interface Aged {
+  age: number
+}
+
+class Person implements Greetable, Aged {
+  name?: string;
+  constructor(name: string = 'Mr Nothing', public age: number) {
+
+    this.name = name
+
+    this.age = age
+  }
+  greet(phrase: string) {
+    console.log(`${phrase} ${this.name}`)
+  }
+}
+
+const user1 = new Person(undefined, 5)
+
+user1.greet('Good Morning')
+```
+
+ 
